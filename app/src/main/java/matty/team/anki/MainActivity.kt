@@ -1,36 +1,47 @@
 package matty.team.anki
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.Surface
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import matty.team.anki.Screen.DeckCreation
+import matty.team.anki.Screen.Main
+import matty.team.anki.ui.screen.DeckCreationScreen
+import matty.team.anki.ui.screen.MainScreen
 import matty.team.anki.ui.theme.AnkiTheme
 
-private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val (isCreationMenuExpanded, setCreationMenuExpanded) = remember { mutableStateOf(false) }
+            val navController = rememberNavController()
             AnkiTheme {
-                Scaffold(floatingActionButton = {
-                    CreationMenu(
-                        isCreationMenuExpanded,
-                        setCreationMenuExpanded,
-                        onAddCardClick = { Log.d(TAG, "onCreate: onAddCardClicked") },
-                        onAddDeckClick = { Log.d(TAG, "onCreate: onAddDeckClicked") })
-                }) {
-
+                Surface {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Main.route,
+                    ) {
+                        composable(Main.route) {
+                            MainScreen(navController)
+                        }
+                        composable(DeckCreation.route) {
+                            DeckCreationScreen(
+                                onDoneClicked = navController::popBackStack,
+                                onBackClicked = navController::popBackStack
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+sealed class Screen(val route: String) {
+    object Main : Screen("main")
+    object DeckCreation : Screen("deck/new")
 }
