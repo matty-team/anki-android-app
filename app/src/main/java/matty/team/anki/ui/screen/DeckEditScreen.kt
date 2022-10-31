@@ -12,7 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import java.util.UUID
 import matty.team.anki.R
+import matty.team.anki.data.Deck
+import matty.team.anki.data.defaultDeckColor
 import matty.team.anki.ui.component.DeckForm
 import matty.team.anki.ui.component.DeckFormState
 import matty.team.anki.ui.component.button.BackButton
@@ -22,24 +25,25 @@ import matty.team.anki.ui.theme.AnkiTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeckCreationScreen(
+fun DeckEditScreen(
     onBack: () -> Unit,
-    onDone: (String, Long) -> Unit
+    onDone: (String, Long) -> Unit,
+    deck: Deck
 ) {
-    val formState = remember { DeckFormState() }
+    val formState = remember { DeckFormState(deck) }
     val doneAction = remember { { onDone(formState.nameField.text, formState.color) } }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.create_deck_btn))
+                    Text(text = stringResource(R.string.deck_edit_title))
                 },
                 navigationIcon = {
                     BackButton(onClick = onBack)
                 },
                 actions = {
-                    DoneButton(onClick = doneAction)
+                    DoneButton(onClick = { onDone(formState.nameField.text, formState.color) })
                 }
             )
         }
@@ -49,18 +53,24 @@ fun DeckCreationScreen(
                 .padding(it)
                 .padding(screenPaddingValues)
         ) {
-            DeckForm(onDone = doneAction, formState = formState)
+            DeckForm(formState = formState, onDone = doneAction)
         }
     }
 }
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
-fun DeckCreationScreenPreview() {
+fun DeckEditScreenPreview() {
     AnkiTheme {
-        DeckCreationScreen(
+        DeckEditScreen(
             onBack = {},
-            onDone = { _, _ -> }
+            onDone = { _, _ -> },
+            deck = Deck(
+                name = "Animals",
+                color = defaultDeckColor,
+                isSystemDefault = false,
+                id = UUID.randomUUID()
+            )
         )
     }
 }

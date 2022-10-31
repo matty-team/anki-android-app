@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="create_deck">Создать колоду</string>
-    <string name="add_card">Добавить карточку</string>
-    <string name="add">Добавить</string>
+    <string name="create_deck_btn">Создать колоду</string>
+    <string name="new_deck_title">Новая доска</string>
+    <string name="add_card_btn">Добавить карточку</string>
+    <string name="go_back_btn">Назад</string>
+    <string name="done_btn">Готово</string>
+    <string name="name_label">Название</string>
+    <string name="deck_list_title">Колоды</string>
+    <string name="checked_deck_color_description">Выбранный цвет колоды</string>
+    <string name="learn_btn">Учить</string>
+    <string name="deck_menu_desc">Меню колоды</string>
+    <string name="deck_edit_btn">Редактировать колоду</string>
+    <string name="deck_edit_title">Редактировать колоду</string>
 </resources>

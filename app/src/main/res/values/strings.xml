@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name" translatable="false">Anki</string>
-    <string name="create_deck">Add deck</string>
-    <string name="add_card">Add card</string>
-    <string name="add">Add</string>
+    <string name="create_deck_btn">Create deck</string>
+    <string name="new_deck_title">New deck</string>
+    <string name="add_card_btn">Add card</string>
+    <string name="go_back_btn">Go back</string>
+    <string name="done_btn">Done</string>
+    <string name="name_label">Name</string>
+    <string name="deck_list_title">Decks</string>
+    <string name="checked_deck_color_description">Checked color</string>
+    <string name="learn_btn">Learn</string>
+    <string name="deck_menu_desc">Deck menu</string>
+    <string name="deck_edit_btn">Edit deck</string>
+    <string name="deck_edit_title">Edit deck</string>
 </resources>
