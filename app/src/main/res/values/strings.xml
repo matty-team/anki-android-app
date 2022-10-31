@@ -9,4 +9,7 @@
     <string name="deck_list_title">Decks</string>
     <string name="checked_deck_color_description">Checked color</string>
     <string name="learn_btn">Learn</string>
+    <string name="deck_menu_desc">Deck menu</string>
+    <string name="deck_edit_btn">Edit deck</string>
+    <string name="deck_edit_title">Edit deck</string>
 </resources>

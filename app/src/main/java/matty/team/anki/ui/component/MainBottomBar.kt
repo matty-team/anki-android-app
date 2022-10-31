@@ -1,6 +1,5 @@
 package matty.team.anki.ui.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.End
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.res.stringResource
 import matty.team.anki.R.string
 import matty.team.anki.ui.horizontalScreenPadding
 import matty.team.anki.ui.verticalScreenPadding
-
 
 @Composable
 fun MainBottomBar(
@@ -34,7 +31,6 @@ fun MainBottomBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Transparent)
             .padding(
                 start = horizontalScreenPadding,
                 end = horizontalScreenPadding,

@@ -18,9 +18,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import matty.team.anki.R.string
 import matty.team.anki.Screen
 import matty.team.anki.data.Deck
 import matty.team.anki.ui.component.MainBottomBar
@@ -81,7 +83,10 @@ private fun DeckActions(
     }
 
     IconButton(onClick = { menuExpanded = true }) {
-        Icon(Icons.Default.Menu, contentDescription = "Deck menu")
+        Icon(
+            imageVector = Icons.Default.Menu,
+            contentDescription = stringResource(string.deck_menu_desc)
+        )
     }
 
     DropdownMenu(
@@ -89,6 +94,9 @@ private fun DeckActions(
         onDismissRequest = { menuExpanded = false },
         offset = DpOffset(8.dp, 0.dp)
     ) {
-        DropdownMenuItem(text = { Text(text = "Edit deck") }, onClick = onEditDeckClick)
+        DropdownMenuItem(
+            text = { Text(text = stringResource(string.deck_edit_btn)) },
+            onClick = onEditDeckClick
+        )
     }
 }

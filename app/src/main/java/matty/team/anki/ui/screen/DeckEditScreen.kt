@@ -2,13 +2,8 @@ package matty.team.anki.ui.screen
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,11 +12,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import java.util.UUID
 import matty.team.anki.R
-import matty.team.anki.R.string
 import matty.team.anki.data.Deck
+import matty.team.anki.data.defaultDeckColor
 import matty.team.anki.ui.component.DeckForm
 import matty.team.anki.ui.component.DeckFormState
+import matty.team.anki.ui.component.button.BackButton
+import matty.team.anki.ui.component.button.DoneButton
 import matty.team.anki.ui.screenPaddingValues
 import matty.team.anki.ui.theme.AnkiTheme
 
@@ -39,23 +37,13 @@ fun DeckEditScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.create_deck_btn))
+                    Text(text = stringResource(R.string.deck_edit_title))
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(string.go_back_btn)
-                        )
-                    }
+                    BackButton(onClick = onBack)
                 },
                 actions = {
-                    IconButton(onClick = doneAction) {
-                        Icon(
-                            imageVector = Icons.Default.Done,
-                            contentDescription = stringResource(string.done_btn)
-                        )
-                    }
+                    DoneButton(onClick = { onDone(formState.nameField.text, formState.color) })
                 }
             )
         }
@@ -74,9 +62,15 @@ fun DeckEditScreen(
 @Composable
 fun DeckEditScreenPreview() {
     AnkiTheme {
-        DeckCreationScreen(
+        DeckEditScreen(
             onBack = {},
-            onDone = { _, _ -> }
+            onDone = { _, _ -> },
+            deck = Deck(
+                name = "Animals",
+                color = defaultDeckColor,
+                isSystemDefault = false,
+                id = UUID.randomUUID()
+            )
         )
     }
 }

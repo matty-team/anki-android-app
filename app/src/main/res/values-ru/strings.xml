@@ -9,4 +9,7 @@
     <string name="deck_list_title">Колоды</string>
     <string name="checked_deck_color_description">Выбранный цвет колоды</string>
     <string name="learn_btn">Учить</string>
+    <string name="deck_menu_desc">Меню колоды</string>
+    <string name="deck_edit_btn">Редактировать колоду</string>
+    <string name="deck_edit_title">Редактировать колоду</string>
 </resources>
