@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
 import matty.team.anki.Screen.DeckCreation
 import matty.team.anki.Screen.DeckDetails
@@ -24,6 +25,7 @@ import matty.team.anki.ui.screen.DeckEditScreen
 import matty.team.anki.ui.screen.MainScreen
 import matty.team.anki.ui.theme.AnkiTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
