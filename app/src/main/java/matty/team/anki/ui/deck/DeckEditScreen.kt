@@ -1,4 +1,4 @@
-package matty.team.anki.ui.screen
+package matty.team.anki.ui.deck
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.padding
@@ -8,31 +8,29 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import java.util.UUID
 import matty.team.anki.R
-import matty.team.anki.data.Deck
 import matty.team.anki.data.defaultDeckColor
-import matty.team.anki.ui.component.DeckForm
-import matty.team.anki.ui.component.DeckFormState
 import matty.team.anki.ui.component.button.BackButton
 import matty.team.anki.ui.component.button.DoneButton
+import matty.team.anki.ui.deck.form.DeckForm
+import matty.team.anki.ui.deck.form.DeckFormState
 import matty.team.anki.ui.screenPaddingValues
 import matty.team.anki.ui.theme.AnkiTheme
+import matty.team.anki.ui.vm.ViewModelState
+import matty.team.anki.ui.vm.ViewModelState.Ready
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeckEditScreen(
+    init: () -> Unit,
     onBack: () -> Unit,
-    onDone: (String, Long) -> Unit,
-    deck: Deck
+    onDone: () -> Unit,
+    state: ViewModelState<DeckFormState>
 ) {
-    val formState = remember { DeckFormState(deck) }
-    val doneAction = remember { { onDone(formState.nameField.text, formState.color) } }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -43,7 +41,7 @@ fun DeckEditScreen(
                     BackButton(onClick = onBack)
                 },
                 actions = {
-                    DoneButton(onClick = { onDone(formState.nameField.text, formState.color) })
+                    DoneButton(onClick = { onDone() })
                 }
             )
         }
@@ -53,7 +51,10 @@ fun DeckEditScreen(
                 .padding(it)
                 .padding(screenPaddingValues)
         ) {
-            DeckForm(formState = formState, onDone = doneAction)
+            LaunchedEffect(Unit) { init() }
+            if (state is Ready) {
+                DeckForm(formState = state.data, onDone = onDone)
+            }
         }
     }
 }
@@ -63,13 +64,14 @@ fun DeckEditScreen(
 fun DeckEditScreenPreview() {
     AnkiTheme {
         DeckEditScreen(
+            init = {},
             onBack = {},
-            onDone = { _, _ -> },
-            deck = Deck(
-                name = "Animals",
-                color = defaultDeckColor,
-                isSystemDefault = false,
-                id = UUID.randomUUID()
+            onDone = { },
+            state = Ready(
+                DeckFormState(
+                    name = "Animals",
+                    color = defaultDeckColor
+                )
             )
         )
     }

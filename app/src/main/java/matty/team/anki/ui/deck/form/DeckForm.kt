@@ -1,4 +1,4 @@
-package matty.team.anki.ui.component
+package matty.team.anki.ui.deck.form
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas

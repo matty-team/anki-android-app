@@ -1,4 +1,4 @@
-package matty.team.anki.ui.screen
+package matty.team.anki.ui.deck.details
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,24 +24,35 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import matty.team.anki.R.string
-import matty.team.anki.Screen
+import matty.team.anki.Screen.DeckEdit
 import matty.team.anki.data.Deck
 import matty.team.anki.ui.component.MainBottomBar
 import matty.team.anki.ui.component.button.BackButton
+import matty.team.anki.ui.vm.ViewModelState.Ready
 import matty.team.anki.ui.screenPaddingValues
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeckDetailsScreen(deck: Deck, navController: NavController) {
+fun DeckDetailsScreen(
+    init: () -> Unit,
+    state: DeckDetailsState,
+    navController: NavController
+) {
+    LaunchedEffect(Unit) { init() }
+
     Scaffold(
         topBar = {
-            TopBar(navController, deck)
+            if (state is Ready) {
+                TopBar(navController, state.data)
+            }
         },
         bottomBar = {
-            MainBottomBar(
-                onLearnButtonClick = { TODO() },
-                onAddCardButtonClick = { TODO() }
-            )
+            if (state is Ready) {
+                MainBottomBar(
+                    onLearnButtonClick = { TODO() },
+                    onAddCardButtonClick = { TODO() }
+                )
+            }
         }
     ) {
         Surface(
@@ -68,7 +80,7 @@ private fun TopBar(
         },
         actions = {
             DeckActions(
-                onEditDeckClick = { navController.navigate(Screen.DeckEdit.resolveRoute(deck.id)) }
+                onEditDeckClick = { navController.navigate(DeckEdit.resolveRoute(deck.id)) }
             )
         }
     )

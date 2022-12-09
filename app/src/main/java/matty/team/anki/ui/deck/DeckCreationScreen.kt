@@ -1,4 +1,4 @@
-package matty.team.anki.ui.screen
+package matty.team.anki.ui.deck
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.padding
@@ -13,21 +13,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import matty.team.anki.R
-import matty.team.anki.ui.component.DeckForm
-import matty.team.anki.ui.component.DeckFormState
+import matty.team.anki.data.defaultDeckColor
 import matty.team.anki.ui.component.button.BackButton
 import matty.team.anki.ui.component.button.DoneButton
+import matty.team.anki.ui.deck.form.DeckForm
+import matty.team.anki.ui.deck.form.DeckFormState
 import matty.team.anki.ui.screenPaddingValues
 import matty.team.anki.ui.theme.AnkiTheme
+import matty.team.anki.ui.vm.ViewModelState
+import matty.team.anki.ui.vm.ViewModelState.Ready
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeckCreationScreen(
+    state: ViewModelState<DeckFormState>,
     onBack: () -> Unit,
-    onDone: (String, Long) -> Unit
+    onDone: () -> Unit
 ) {
-    val formState = remember { DeckFormState() }
-    val doneAction = remember { { onDone(formState.nameField.text, formState.color) } }
+    val doneAction = remember { { onDone() } }
 
     Scaffold(
         topBar = {
@@ -49,7 +52,9 @@ fun DeckCreationScreen(
                 .padding(it)
                 .padding(screenPaddingValues)
         ) {
-            DeckForm(onDone = doneAction, formState = formState)
+            if (state is Ready) {
+                DeckForm(onDone = doneAction, formState = state.data)
+            }
         }
     }
 }
@@ -60,7 +65,10 @@ fun DeckCreationScreenPreview() {
     AnkiTheme {
         DeckCreationScreen(
             onBack = {},
-            onDone = { _, _ -> }
+            onDone = {},
+            state = Ready(
+                DeckFormState(name = "", color = defaultDeckColor)
+            )
         )
     }
 }

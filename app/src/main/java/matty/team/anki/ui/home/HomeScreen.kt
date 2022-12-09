@@ -1,4 +1,4 @@
-package matty.team.anki.ui.screen
+package matty.team.anki.ui.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,10 +24,15 @@ import matty.team.anki.ui.screenPaddingValues
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+fun HomeScreen(
     navController: NavHostController,
+    onInit: () -> Unit,
     deckList: List<Deck>
 ) {
+    LaunchedEffect(Unit) {
+        onInit()
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {})
@@ -45,14 +51,14 @@ fun MainScreen(
         ) {
             if (deckList.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Center) {
-                    Button(onClick = { navController.navigate(Screen.DeckCreation.route) }) {
+                    Button(onClick = { navController.navigate(Screen.NewDeck.route) }) {
                         Text(text = stringResource(string.create_deck_btn))
                     }
                 }
             } else {
                 DeckList(
                     decks = deckList,
-                    onAddClick = { navController.navigate(Screen.DeckCreation.route) },
+                    onAddClick = { navController.navigate(Screen.NewDeck.route) },
                     onDeckClick = { card ->
                         navController.navigate(
                             Screen.DeckDetails.resolveRoute(card.id)

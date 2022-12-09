@@ -4,26 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
-import matty.team.anki.Screen.DeckCreation
 import matty.team.anki.Screen.DeckDetails
 import matty.team.anki.Screen.DeckEdit
-import matty.team.anki.Screen.Main
-import matty.team.anki.data.Deck
-import matty.team.anki.data.defaultDeckColor
-import matty.team.anki.ui.screen.DeckCreationScreen
-import matty.team.anki.ui.screen.DeckDetailsScreen
-import matty.team.anki.ui.screen.DeckEditScreen
-import matty.team.anki.ui.screen.MainScreen
+import matty.team.anki.Screen.Home
+import matty.team.anki.Screen.NewDeck
+import matty.team.anki.ui.deck.DeckCreationScreen
+import matty.team.anki.ui.deck.DeckEditScreen
+import matty.team.anki.ui.deck.details.DeckDetailsScreen
+import matty.team.anki.ui.deck.details.DeckDetailsViewModel
+import matty.team.anki.ui.deck.form.DeckFormViewModel
+import matty.team.anki.ui.home.HomeScreen
+import matty.team.anki.ui.home.HomeScreenViewModel
 import matty.team.anki.ui.theme.AnkiTheme
+import matty.team.anki.ui.vm.ViewModelState.Error
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -33,65 +32,53 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             AnkiTheme {
-                var deckList by remember {
-                    mutableStateOf(
-                        listOf(
-                            Deck(
-                                id = UUID.randomUUID(),
-                                name = "English",
-                                color = defaultDeckColor
-                            )
-                        )
-                    )
-                }
-
                 Surface {
                     NavHost(
                         navController = navController,
-                        startDestination = Main.route,
+                        startDestination = Home.route,
                     ) {
-                        composable(Main.route) {
-                            MainScreen(navController, deckList = deckList)
+                        composable(Home.route) {
+                            val viewModel = hiltViewModel<HomeScreenViewModel>()
+                            HomeScreen(
+                                navController,
+                                viewModel::onInit,
+                                viewModel.deckList
+                            )
                         }
-                        composable(DeckCreation.route) {
+                        composable(NewDeck.route) {
+                            val viewModel = hiltViewModel<DeckFormViewModel>()
                             DeckCreationScreen(
-                                onDone = { name, color ->
-                                    navController.popBackStack()
-                                    deckList = deckList + Deck(id = UUID.randomUUID(), name, color)
+                                state = viewModel.state,
+                                onDone = {
+                                    viewModel.onAdd()
+                                    if (viewModel.state !is Error) {
+                                        navController.popBackStack()
+                                    }
                                 },
                                 onBack = navController::popBackStack
                             )
                         }
                         composable(DeckEdit.route) {
                             val idArg = it.arguments?.getString("id")
-                            val deck = remember(id) {
-                                val id = UUID.fromString(idArg)
-                                deckList.find { deck -> deck.id == id }
-                            }
+                            val viewModel = hiltViewModel<DeckFormViewModel>()
                             DeckEditScreen(
-                                deck = deck!!,
-                                onDone = { name, color ->
-                                    navController.navigate(Main.route) {
-                                        popUpTo(Main.route) { inclusive = true }
-                                    }
-                                    deckList = deckList.map { d ->
-                                        if (d.id == deck.id) deck.copy(
-                                            name = name,
-                                            color = color
-                                        ) else d
+                                init = { viewModel.initFrom(idArg) },
+                                onDone = {
+                                    viewModel.onUpdate()
+                                    if (viewModel.state !is Error) {
+                                        navController.popBackStack()
                                     }
                                 },
-                                onBack = navController::popBackStack
+                                onBack = navController::popBackStack,
+                                state = viewModel.state
                             )
                         }
                         composable(DeckDetails.route) {
                             val idArg = it.arguments?.getString("id")
-                            val deck = remember(id) {
-                                val id = UUID.fromString(idArg)
-                                deckList.find { deck -> deck.id == id }
-                            }
+                            val viewModel = hiltViewModel<DeckDetailsViewModel>()
                             DeckDetailsScreen(
-                                deck = deck!!,
+                                init = { viewModel.loadDeck(idArg) },
+                                state = viewModel.state,
                                 navController = navController
                             )
                         }
@@ -103,9 +90,9 @@ class MainActivity : ComponentActivity() {
 }
 
 sealed class Screen(val route: String) {
-    object Main : Screen("main")
-    object DeckCreation : Screen("deck/new")
-    object CardCreation : Screen("card/new")
+    object Home : Screen("main")
+    object NewDeck : Screen("deck/new")
+    object NewCard : Screen("card/new")
 
     object DeckDetails : Screen("deck/details/{id}") {
         fun resolveRoute(deckId: UUID) = "deck/details/$deckId"
